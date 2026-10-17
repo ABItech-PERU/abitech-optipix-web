@@ -174,7 +174,9 @@ export default class Intro extends Component<Props, State> {
     try {
       this.setState({ fetchingDemoIndex: index });
       const demo = demos[index];
-      const blob = await fetch(demo.url).then((r) => r.blob());
+      const response = await fetch(demo.url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const blob = await response.blob();
       const file = new File([blob], demo.filename, { type: blob.type });
       const v = validateFile(file);
       if (!v.valid) {

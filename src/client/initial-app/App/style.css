@@ -66,3 +66,98 @@
   --size: 225px;
   --stroke-width: 26px;
 }
+
+.load-error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  width: calc(100% - 32px);
+  max-width: 400px;
+  padding: 32px 24px 24px;
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(20, 38, 48, 0.14),
+    0 1px 3px rgba(20, 38, 48, 0.1);
+  color: var(--dark-text);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .load-error {
+    animation: load-error-in 250ms ease-out;
+  }
+}
+
+@keyframes load-error-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 12px));
+  }
+}
+
+.load-error-icon {
+  width: 32px;
+  height: 32px;
+  padding: 16px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.12);
+  fill: var(--deep-blue);
+}
+
+.load-error-title {
+  margin: 16px 0 8px;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.load-error-text {
+  margin: 0 0 24px;
+  font-size: 1.3rem;
+  line-height: 1.5;
+  color: var(--dim-text);
+  text-wrap: balance;
+}
+
+.load-error-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.load-error-button {
+  composes: unbutton from global;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+
+  &:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+}
+
+.retry-button {
+  composes: load-error-button;
+  background: var(--blue);
+  color: var(--white);
+
+  &:hover {
+    background: var(--deep-blue);
+  }
+}
+
+.home-button {
+  composes: load-error-button;
+  color: var(--deep-blue);
+
+  &:hover {
+    background: rgba(59, 130, 246, 0.08);
+  }
+}

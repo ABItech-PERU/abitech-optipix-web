@@ -16,8 +16,10 @@ import 'shared/custom-els/loading-spinner';
 const ROUTE_EDITOR = '/editor';
 const ROUTE_BATCH = '/batch';
 
-const compressPromise = import('client/lazy-app/Compress');
-const batchCompressPromise = import('client/lazy-app/BatchCompress');
+const importCompress = () => import('client/lazy-app/Compress');
+const importBatchCompress = () => import('client/lazy-app/BatchCompress');
+const compressPromise = importCompress();
+const batchCompressPromise = importBatchCompress();
 const swBridgePromise = import('client/lazy-app/sw-bridge');
 
 function back() {
@@ -34,6 +36,8 @@ interface State {
   isBatchMode: Boolean;
   Compress?: typeof import('client/lazy-app/Compress').default;
   BatchCompress?: typeof import('client/lazy-app/BatchCompress').default;
+  hasCompressLoadFailed: boolean;
+  hasBatchCompressLoadFailed: boolean;
 }
 
 export default class App extends Component<Props, State> {
@@ -47,6 +51,8 @@ export default class App extends Component<Props, State> {
     files: undefined,
     Compress: undefined,
     BatchCompress: undefined,
+    hasCompressLoadFailed: false,
+    hasBatchCompressLoadFailed: false,
   };
 
   snackbar?: SnackBarElement;
@@ -54,21 +60,8 @@ export default class App extends Component<Props, State> {
   constructor() {
     super();
 
-    compressPromise
-      .then((module) => {
-        this.setState({ Compress: module.default });
-      })
-      .catch(() => {
-        this.showSnack('Failed to load app');
-      });
-
-    batchCompressPromise
-      .then((module) => {
-        this.setState({ BatchCompress: module.default });
-      })
-      .catch(() => {
-        this.showSnack('Failed to load batch compress');
-      });
+    this.loadCompress(compressPromise);
+    this.loadBatchCompress(batchCompressPromise);
 
     swBridgePromise.then(async ({ offliner, getSharedImage }) => {
       offliner(this.showSnack);
@@ -90,6 +83,30 @@ export default class App extends Component<Props, State> {
 
     window.addEventListener('popstate', this.onPopState);
   }
+
+  private loadCompress(modulePromise = importCompress()) {
+    modulePromise.then(
+      (module) => this.setState({ Compress: module.default }),
+      () => this.setState({ hasCompressLoadFailed: true }),
+    );
+  }
+
+  private loadBatchCompress(modulePromise = importBatchCompress()) {
+    modulePromise.then(
+      (module) => this.setState({ BatchCompress: module.default }),
+      () => this.setState({ hasBatchCompressLoadFailed: true }),
+    );
+  }
+
+  private retryLoad = () => {
+    const { Compress, BatchCompress } = this.state;
+    this.setState({
+      hasCompressLoadFailed: false,
+      hasBatchCompressLoadFailed: false,
+    });
+    if (!Compress) this.loadCompress();
+    if (!BatchCompress) this.loadBatchCompress();
+  };
 
   private onFileDrop = ({ files }: FileDropEvent) => {
     if (!files || files.length === 0) return;
@@ -167,17 +184,45 @@ export default class App extends Component<Props, State> {
       Compress,
       BatchCompress,
       awaitingShareTarget,
+      hasCompressLoadFailed,
+      hasBatchCompressLoadFailed,
     }: State,
   ) {
+    const isEditorMissing = isEditorOpen && !Compress;
+    const isBatchMissing = isBatchMode && !BatchCompress;
+    const hasLoadFailed =
+      (isEditorMissing && hasCompressLoadFailed) ||
+      (isBatchMissing && hasBatchCompressLoadFailed);
     const showSpinner =
-      awaitingShareTarget ||
-      (isEditorOpen && !Compress) ||
-      (isBatchMode && !BatchCompress);
+      awaitingShareTarget || isEditorMissing || isBatchMissing;
 
     return (
       <div class={style.app}>
         <file-drop onfiledrop={this.onFileDrop} class={style.drop} multiple>
-          {showSpinner ? (
+          {hasLoadFailed ? (
+            <div class={style.loadError} role="alert">
+              <svg
+                class={style.loadErrorIcon}
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path d="M23.64 7c-.45-.34-4.93-4-11.64-4-1.5 0-2.89.19-4.15.48L18.18 13.8 23.64 7zm-6.6 8.22L3.27 1.44 2 2.72l2.05 2.06C1.91 5.76.59 6.82.36 7l11.63 14.49.01.01.01-.01 3.9-4.86 3.32 3.32 1.27-1.27-3.46-3.46z" />
+              </svg>
+              <h2 class={style.loadErrorTitle}>No se pudo abrir el editor</h2>
+              <p class={style.loadErrorText}>
+                Falta descargar una parte de OptiPix en este dispositivo.
+                Conéctate a internet e inténtalo de nuevo.
+              </p>
+              <div class={style.loadErrorActions}>
+                <button class={style.retryButton} onClick={this.retryLoad}>
+                  Reintentar
+                </button>
+                <button class={style.homeButton} onClick={back}>
+                  Volver al inicio
+                </button>
+              </div>
+            </div>
+          ) : showSpinner ? (
             <loading-spinner class={style.appLoader} />
           ) : isBatchMode && BatchCompress && files && files.length > 0 ? (
             <BatchCompress
