@@ -64,13 +64,16 @@ export async function offliner(showSnack: SnackBarElement['showSnackbar']) {
 
   const hasController = !!navigator.serviceWorker.controller;
 
+  // El SW avisa cuando ya guardó códecs y demos, no al instalarse.
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data !== 'offline-ready') return;
+    showSnack('Listo para usar sin conexión', { timeout: 5000 });
+  });
+
   // Look for changes in the controller
   navigator.serviceWorker.addEventListener('controllerchange', async () => {
     // Is it the first install?
-    if (!hasController) {
-      showSnack('Ready to work offline', { timeout: 5000 });
-      return;
-    }
+    if (!hasController) return;
 
     // Otherwise reload (the user will have agreed to this).
     location.reload();

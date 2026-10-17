@@ -86,10 +86,13 @@ self.addEventListener('message', (event) => {
   switch (event.data) {
     case 'cache-all':
       event.waitUntil(
-        Promise.all([
-          cacheAdditionalProcessors(versionedCache),
-          cacheDemos(dynamicCache),
-        ]),
+        (async function () {
+          await Promise.all([
+            cacheAdditionalProcessors(versionedCache),
+            cacheDemos(dynamicCache),
+          ]);
+          (event.source as Client | null)?.postMessage('offline-ready');
+        })(),
       );
       break;
     case 'skip-waiting':
