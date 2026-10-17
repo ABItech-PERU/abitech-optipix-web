@@ -550,7 +550,7 @@ export default class Intro extends Component<Props, State> {
                 </div>
                 <a
                   class={style.footerLinkWithLogo}
-                  href="https://github.com/abitech-peru/optipix"
+                  href="https://github.com/ABItech-PERU/abitech-optipix-web"
                   target="_blank"
                 >
                   <img src={githubLogo} alt="" width="10" height="10" />
