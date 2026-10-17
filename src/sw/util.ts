@@ -1,4 +1,4 @@
-import { initial, theRest } from './to-cache';
+import { initial, theRest, demos } from './to-cache';
 
 // Give TypeScript the correct global.
 declare var self: ServiceWorkerGlobalScope;
@@ -97,6 +97,17 @@ export async function cacheBasics(cacheName: string) {
 export async function cacheAdditionalProcessors(cacheName: string) {
   const cache = await caches.open(cacheName);
   return cache.addAll(urlsToRequests(await theRest));
+}
+
+// La caché dinámica sobrevive a cada versión. Las demos ya guardadas no se
+// vuelven a descargar.
+export async function cacheDemos(cacheName: string) {
+  const cache = await caches.open(cacheName);
+  const cachedPaths = new Set(
+    (await cache.keys()).map((request) => new URL(request.url).pathname),
+  );
+  const missingDemos = demos.filter((url) => !cachedPaths.has(url));
+  return cache.addAll(urlsToRequests(missingDemos));
 }
 
 const nextMessageResolveMap = new Map<string, (() => void)[]>();

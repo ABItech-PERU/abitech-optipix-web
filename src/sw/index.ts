@@ -4,6 +4,7 @@ import {
   cacheOrNetwork,
   cacheBasics,
   cacheAdditionalProcessors,
+  cacheDemos,
   serveShareTarget,
 } from './util';
 import { get } from 'idb-keyval';
@@ -25,6 +26,7 @@ self.addEventListener('install', (event) => {
       // If the user has already interacted with the app, update the codecs too.
       if (await get('user-interacted')) {
         promises.push(cacheAdditionalProcessors(versionedCache));
+        promises.push(cacheDemos(dynamicCache));
       }
 
       await Promise.all(promises);
@@ -54,7 +56,7 @@ self.addEventListener('fetch', (event) => {
   // Don't care about other-origin URLs
   if (url.origin !== location.origin) return;
 
-  if (url.pathname === '/editor') {
+  if (url.pathname === '/editor' || url.pathname === '/batch') {
     event.respondWith(Response.redirect('/'));
     return;
   }
@@ -83,7 +85,12 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('message', (event) => {
   switch (event.data) {
     case 'cache-all':
-      event.waitUntil(cacheAdditionalProcessors(versionedCache));
+      event.waitUntil(
+        Promise.all([
+          cacheAdditionalProcessors(versionedCache),
+          cacheDemos(dynamicCache),
+        ]),
+      );
       break;
     case 'skip-waiting':
       self.skipWaiting();

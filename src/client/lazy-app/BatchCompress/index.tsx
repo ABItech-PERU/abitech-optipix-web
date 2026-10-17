@@ -74,6 +74,8 @@ export default class BatchCompress extends Component<Props, State> {
   };
 
   componentDidMount() {
+    import('../sw-bridge').then(({ mainAppLoaded }) => mainAppLoaded());
+
     // Inicializar con configuración por defecto
     const encoder = encoderMap.mozJPEG;
     this.setState({
