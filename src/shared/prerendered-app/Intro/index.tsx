@@ -190,10 +190,13 @@ export default class Intro extends Component<Props, State> {
       this.props.onFile!(file);
     } catch (err) {
       this.setState({ fetchingDemoIndex: undefined });
-      this.props.showSnack!('No se pudo cargar la imagen de demo', {
-        timeout: 5000,
-        actions: ['Cerrar'],
-      });
+      this.props.showSnack!(
+        'No se pudo cargar la imagen de muestra. Revisa tu conexión e inténtalo de nuevo.',
+        {
+          timeout: 5000,
+          actions: ['Cerrar'],
+        },
+      );
     }
   };
 
@@ -438,7 +441,7 @@ export default class Intro extends Component<Props, State> {
                   <img
                     class={style.infoImg}
                     src={smallSectionAsset}
-                    alt="silhouette of a large 1.4 megabyte image shrunk into a smaller 80 kilobyte image"
+                    alt="Silueta de una imagen grande de 1,4 megabytes reducida a una de 80 kilobytes"
                     width="536"
                     height="522"
                   />
@@ -464,7 +467,7 @@ export default class Intro extends Component<Props, State> {
                   <img
                     class={style.infoImg}
                     src={simpleSectionAsset}
-                    alt="grid of multiple shrunk images displaying various options"
+                    alt="Cuadrícula de imágenes reducidas con distintas opciones"
                     width="538"
                     height="384"
                   />
@@ -490,7 +493,7 @@ export default class Intro extends Component<Props, State> {
                   <img
                     class={style.infoImg}
                     src={secureSectionAsset}
-                    alt="silhouette of a cloud with a 'no' symbol on top"
+                    alt="Silueta de una nube tachada"
                     width="498"
                     height="333"
                   />
@@ -515,7 +518,7 @@ export default class Intro extends Component<Props, State> {
                   <img
                     class={style.infoImg}
                     src={multiImagesSectionAsset}
-                    alt="grid of multiple images being compressed at once"
+                    alt="Cuadrícula de varias imágenes comprimiéndose a la vez"
                     width="700"
                   />
                 </div>

@@ -333,7 +333,11 @@ export default class Output extends Component<Props, State> {
         </div>
         <div class={style.controls}>
           <div class={style.buttonGroup}>
-            <button class={style.firstButton} onClick={this.zoomOut}>
+            <button
+              class={style.firstButton}
+              onClick={this.zoomOut}
+              title="Alejar"
+            >
               <RemoveIcon />
             </button>
             {editingScale ? (
@@ -357,7 +361,11 @@ export default class Output extends Component<Props, State> {
                 <span class={style.zoomValue}>{Math.round(scale * 100)}</span>%
               </span>
             )}
-            <button class={style.lastButton} onClick={this.zoomIn}>
+            <button
+              class={style.lastButton}
+              onClick={this.zoomIn}
+              title="Acercar"
+            >
               <AddIcon />
             </button>
           </div>
@@ -365,7 +373,7 @@ export default class Output extends Component<Props, State> {
             <button
               class={style.firstButton}
               onClick={this.onRotateClick}
-              title="Rotate"
+              title="Rotar"
             >
               <RotateIcon />
             </button>
@@ -373,7 +381,7 @@ export default class Output extends Component<Props, State> {
               <button
                 class={style.button}
                 onClick={this.toggleAliasing}
-                title="Toggle smoothing"
+                title="Activar o desactivar suavizado"
               >
                 {aliasing ? (
                   <ToggleAliasingActiveIcon />
@@ -385,7 +393,7 @@ export default class Output extends Component<Props, State> {
             <button
               class={style.lastButton}
               onClick={this.toggleBackground}
-              title="Toggle background"
+              title="Cambiar fondo"
             >
               {altBackground ? (
                 <ToggleBackgroundActiveIcon />

@@ -431,12 +431,15 @@ export default class Compress extends Component<Props, State> {
       sides: cleanSet(this.state.sides, otherIndex, newSettings),
     });
 
-    const result = await this.props.showSnack('Settings copied across', {
-      timeout: 5000,
-      actions: ['undo', 'dismiss'],
-    });
+    const result = await this.props.showSnack(
+      'Configuración copiada al otro lado',
+      {
+        timeout: 5000,
+        actions: ['Deshacer', 'Cerrar'],
+      },
+    );
 
-    if (result !== 'undo') return;
+    if (result !== 'Deshacer') return;
 
     this.setState({
       sides: cleanSet(this.state.sides, otherIndex, oldSettings),
@@ -499,11 +502,14 @@ export default class Compress extends Component<Props, State> {
       this.setState({
         sides: cleanSet(this.state.sides, index, newLeftSideSettings),
       });
-      const result = await this.props.showSnack('Left side settings imported', {
-        timeout: 3000,
-        actions: ['undo', 'dismiss'],
-      });
-      if (result === 'undo') {
+      const result = await this.props.showSnack(
+        'Configuración importada en el lado izquierdo',
+        {
+          timeout: 3000,
+          actions: ['Deshacer', 'Cerrar'],
+        },
+      );
+      if (result === 'Deshacer') {
         this.setState({
           sides: cleanSet(this.state.sides, index, oldLeftSideSettings),
         });
@@ -521,13 +527,13 @@ export default class Compress extends Component<Props, State> {
         sides: cleanSet(this.state.sides, index, newRightSideSettings),
       });
       const result = await this.props.showSnack(
-        'Right side settings imported',
+        'Configuración importada en el lado derecho',
         {
           timeout: 3000,
-          actions: ['undo', 'dismiss'],
+          actions: ['Deshacer', 'Cerrar'],
         },
       );
-      if (result === 'undo') {
+      if (result === 'Deshacer') {
         this.setState({
           sides: cleanSet(this.state.sides, index, oldRightSideSettings),
         });
@@ -724,7 +730,9 @@ export default class Compress extends Component<Props, State> {
         });
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') return;
-        this.props.showSnack(`Source decoding error: ${err}`);
+        this.props.showSnack(
+          'No se pudo abrir la imagen. El formato no es compatible o el archivo está dañado.',
+        );
         throw err;
       }
     } else {
@@ -783,7 +791,9 @@ export default class Compress extends Component<Props, State> {
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') return;
         this.setState({ loading: false });
-        this.props.showSnack(`Preprocessing error: ${err}`);
+        this.props.showSnack(
+          'No se pudo preparar la imagen. Inténtalo de nuevo.',
+        );
         throw err;
       }
     } else {
@@ -912,7 +922,9 @@ export default class Compress extends Component<Props, State> {
           });
           return { sides };
         });
-        this.props.showSnack(`Processing error: ${err}`);
+        this.props.showSnack(
+          'No se pudo comprimir la imagen. Inténtalo de nuevo o prueba otro formato.',
+        );
         throw err;
       }
     });
@@ -983,7 +995,7 @@ export default class Compress extends Component<Props, State> {
         />
         <button class={style.back} onClick={onBack}>
           <svg viewBox="0 0 61 53.3">
-            <title>Back</title>
+            <title>Volver</title>
             <path
               class={style.backBlob}
               d="M0 25.6c-.5-7.1 4.1-14.5 10-19.1S23.4.1 32.2 0c8.8 0 19 1.6 24.4 8s5.6 17.8 1.7 27a29.7 29.7 0 01-20.5 18c-8.4 1.5-17.3-2.6-24.5-8S.5 32.6.1 25.6z"

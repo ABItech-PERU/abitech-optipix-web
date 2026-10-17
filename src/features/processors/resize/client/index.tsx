@@ -244,7 +244,7 @@ export class Options extends Component<Props, State> {
             <option value="catrom">Catmull-Rom</option>
             <option value="triangle">Triangle (bilinear)</option>
             <option value="hqx">hqx (pixel art)</option>
-            <option value="browser-pixelated">Browser pixelated</option>
+            <option value="browser-pixelated">Navegador pixelado</option>
             <option value="browser-low">Navegador baja calidad</option>
             <option value="browser-medium">Navegador calidad media</option>
             <option value="browser-high">Navegador alta calidad</option>

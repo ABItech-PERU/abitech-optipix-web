@@ -77,7 +77,7 @@ const toOutput: Output = {
     ],
     description:
       'Optimiza y compara imágenes fácil y rápido.',
-    lang: 'en',
+    lang: 'es',
     categories: ['photo', 'productivity', 'utilities'],
     screenshots,
     share_target: {

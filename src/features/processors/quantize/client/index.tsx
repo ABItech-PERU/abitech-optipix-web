@@ -59,7 +59,7 @@ export class Options extends Component<Props, State> {
                 value={'' + options.zx}
                 onChange={this.onChange}
               >
-                <option value="0">Standard</option>
+                <option value="0">Estándar</option>
                 <option value="1">ZX</option>
               </Select>
             </label>
